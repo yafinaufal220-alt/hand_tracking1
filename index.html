@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aplikasi Bahasa Isyarat — SIBI Hand Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <div class="logo-icon">🤟</div>
+        <div>
+          <h1>SIBI Hand Tracker</h1>
+          <p class="subtitle">Sistem Isyarat Bahasa Indonesia</p>
+        </div>
+      </div>
+      <div id="status-bar">
+        <div id="status-dot"></div>
+        <span id="status-text">Klik "Mulai Kamera" untuk memulai</span>
+      </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main>
+
+      <!-- Kamera + Overlay -->
+      <section class="cam-section">
+        <div id="cam-wrap">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="canvas"></canvas>
+
+          <!-- Hold progress ring overlay -->
+          <canvas id="ring-canvas"></canvas>
+
+          <!-- Detected sign overlay -->
+          <div id="sign-overlay">
+            <div id="detected-letter">—</div>
+            <div id="sign-label">Menunggu isyarat...</div>
+            <div class="conf-bar-wrap">
+              <div id="conf-bar"></div>
+            </div>
+          </div>
+
+          <!-- Hold timer bar -->
+          <div id="hold-bar-wrap">
+            <div id="hold-bar"></div>
+            <span id="hold-label">Tahan 1.5 detik untuk menambah huruf</span>
+          </div>
+
+          <!-- Start overlay -->
+          <div id="start-overlay">
+            <div class="start-emoji">🤟</div>
+            <h2>SIBI Hand Tracker</h2>
+            <p>Aplikasi pengenalan bahasa isyarat tangan secara real-time menggunakan MediaPipe AI</p>
+            <button id="start-btn">▶ Mulai Kamera</button>
+            <small>Izinkan akses kamera saat diminta</small>
+          </div>
+        </div>
+
+        <!-- Mode & info bar -->
+        <div class="cam-info-bar">
+          <span class="badge blue">MediaPipe Hands</span>
+          <span class="badge green">21 Landmark</span>
+          <span id="fps-badge" class="badge gray">0 FPS</span>
+        </div>
+      </section>
+
+      <!-- Right Panel -->
+      <section class="right-panel">
+
+        <!-- Kalimat tersusun -->
+        <div class="card">
+          <div class="card-label">📝 Kalimat Tersusun</div>
+          <div id="sentence-display"><span class="cursor"></span></div>
+        </div>
+
+        <!-- Kontrol -->
+        <div class="card controls-card">
+          <div class="card-label">⚙️ Kontrol</div>
+          <div class="btn-grid">
+            <button class="ctrl-btn" onclick="addSpace()">+ Spasi</button>
+            <button class="ctrl-btn danger" onclick="deleteLast()">⌫ Hapus</button>
+            <button class="ctrl-btn" onclick="clearAll()">🗑 Bersihkan</button>
+            <button class="ctrl-btn accent" onclick="speakSentence()">🔊 Ucapkan</button>
+          </div>
+          <div class="hold-info">
+            <label>Kecepatan deteksi (ms):</label>
+            <input type="range" id="hold-speed" min="800" max="3000" step="100" value="1500" />
+            <span id="hold-speed-val">1500 ms</span>
+          </div>
+        </div>
+
+        <!-- Alphabet Grid -->
+        <div class="card">
+          <div class="card-label">🔤 Alfabet SIBI (A–Z)</div>
+          <div id="sign-grid"></div>
+        </div>
+
+        <!-- History -->
+        <div class="card">
+          <div class="card-label">🕒 Riwayat Deteksi</div>
+          <div id="history-list"></div>
+        </div>
+
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>Dibuat dengan ❤️ menggunakan <strong>MediaPipe Hands</strong> — Bahasa Isyarat SIBI (Sistem Isyarat Bahasa Indonesia)</p>
+    </footer>
+
+  </div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+
+  <script src="classifier.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
