@@ -22,14 +22,17 @@
   --radius-sm: 8px;
 }
 
+/* ── BASE ── */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Segoe UI', system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.5;
-  height: 100vh;
-  overflow: hidden; /* Cegah seluruh halaman scroll */
 }
 
 #app {
@@ -39,21 +42,24 @@ body {
   overflow: hidden;
 }
 
-/* Header */
+/* ── HEADER ── */
 header {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 12px;
-  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
   background: var(--bg2);
   border-bottom: 1px solid var(--border);
-  flex-shrink: 0; /* Header tidak menyusut */
+  flex-shrink: 0;
 }
-.header-left { display: flex; align-items: center; gap: 12px; }
-.logo { font-size: 28px; line-height: 1; }
-h1 { font-size: 20px; font-weight: 700; }
-.sub { font-size: 12px; color: var(--text2); }
+.header-left { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 24px; line-height: 1; }
+h1 { font-size: 18px; font-weight: 700; }
+.sub { font-size: 11px; color: var(--text2); }
 
-#status-bar { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); }
+#status-bar { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
 #status-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: #555; flex-shrink: 0; transition: background 0.3s;
@@ -65,29 +71,80 @@ h1 { font-size: 20px; font-weight: 700; }
 }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-/* Main layout — mengisi sisa tinggi layar, tidak scroll */
+/* ── MAIN LAYOUT (Desktop: 2 kolom) ── */
 main {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: 16px;
-  padding: 16px 24px;
+  gap: 14px;
+  padding: 14px 16px;
   flex: 1;
   min-height: 0;
   overflow: hidden;
   align-items: stretch;
 }
-@media(max-width:900px){
-  main { grid-template-columns: 1fr; overflow-y: auto; }
+
+/* ── MOBILE: kamera di atas, panel di bawah dengan scroll ── */
+@media (max-width: 768px) {
+  html, body { overflow: auto; height: auto; }
+
+  #app { height: auto; overflow: visible; }
+
+  header { padding: 10px 12px; }
+
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow: visible;
+    padding: 10px 12px;
+    gap: 10px;
+    flex: none;
+  }
+
+  /* Kamera selalu di atas di mobile */
+  .cam-section {
+    grid-row: 1;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #cam-wrap {
+    flex: none !important;
+    aspect-ratio: 4/3;  /* Tinggi kamera ikut lebar layar HP */
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  /* Panel kanan di bawah kamera */
+  .right-panel {
+    grid-row: 2;
+    height: auto !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    max-height: none;
+  }
+
+  /* Kalimat lebih kecil di HP */
+  #sentence-box { font-size: 16px; min-height: 40px; }
+
+  /* Word grid 2 kolom di HP */
+  #word-grid { max-height: 200px; grid-template-columns: repeat(2, 1fr); }
+
+  /* Detected word lebih kecil */
+  #detected-word { font-size: 26px; }
+  #detected-emoji { font-size: 26px; }
+
+  footer { display: none; } /* Sembunyikan footer di HP */
 }
 
-/* Camera — tetap fix, tidak naik turun */
+/* ── CAMERA SECTION (Desktop) ── */
 .cam-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   height: 100%;
   overflow: hidden;
 }
+
 #cam-wrap {
   position: relative;
   width: 100%;
@@ -98,30 +155,37 @@ main {
   overflow: hidden;
   border: 1px solid var(--border);
 }
+
 #video, #canvas {
   position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
 }
 #video  { transform: scaleX(-1); }
 #canvas { transform: scaleX(-1); }
 
-/* Word overlay */
+/* ── WORD OVERLAY ── */
 #word-overlay {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: linear-gradient(transparent, rgba(0,0,0,0.88));
-  padding: 50px 16px 14px;
+  padding: 50px 14px 12px;
 }
-#detected-emoji { font-size: 36px; line-height: 1; margin-bottom: 2px; }
+#detected-emoji { font-size: 32px; line-height: 1; margin-bottom: 2px; }
 #detected-word {
-  font-size: 36px; font-weight: 800; color: #fff;
+  font-size: 32px; font-weight: 800; color: #fff;
   line-height: 1; text-shadow: 0 2px 12px rgba(0,0,0,0.8);
 }
-#detected-desc { font-size: 13px; color: rgba(255,255,255,0.65); margin: 4px 0 8px; }
-.conf-wrap { height: 3px; background: rgba(255,255,255,0.15); border-radius: 2px; width: 100px; overflow: hidden; }
-#conf-bar { height: 100%; width: 0%; background: var(--green); transition: width 0.25s, background 0.25s; border-radius: 2px; }
+#detected-desc { font-size: 12px; color: rgba(255,255,255,0.65); margin: 4px 0 6px; }
+.conf-wrap {
+  height: 3px; background: rgba(255,255,255,0.15);
+  border-radius: 2px; width: 100px; overflow: hidden;
+}
+#conf-bar {
+  height: 100%; width: 0%; background: var(--green);
+  transition: width 0.25s, background 0.25s; border-radius: 2px;
+}
 
-/* Hold bar */
+/* ── HOLD BAR ── */
 #hold-wrap {
-  position: absolute; top: 10px; left: 10px; right: 10px;
+  position: absolute; top: 8px; left: 8px; right: 8px;
   display: flex; flex-direction: column; gap: 4px; pointer-events: none;
 }
 #hold-bar {
@@ -131,69 +195,83 @@ main {
 }
 #hold-label { font-size: 11px; color: rgba(255,255,255,0.55); text-align: center; }
 
-/* Start overlay */
+/* ── START OVERLAY ── */
 #start-overlay {
   position: absolute; inset: 0;
   background: rgba(10,12,20,0.93);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 12px; text-align: center; padding: 24px; z-index: 20;
+  gap: 10px; text-align: center; padding: 20px; z-index: 20;
 }
-.start-icon { font-size: 52px; line-height: 1; }
-#start-overlay h2 { font-size: 22px; font-weight: 700; color: #fff; }
-#start-overlay p  { font-size: 14px; color: var(--text2); max-width: 300px; line-height: 1.6; }
+.start-icon { font-size: 44px; line-height: 1; }
+#start-overlay h2 { font-size: 20px; font-weight: 700; color: #fff; }
+#start-overlay p  { font-size: 13px; color: var(--text2); max-width: 280px; line-height: 1.5; }
 #start-btn {
-  margin-top: 8px; padding: 12px 32px;
+  margin-top: 6px; padding: 11px 28px;
   background: var(--blue); color: #fff; border: none;
-  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
   cursor: pointer; transition: transform 0.1s, box-shadow 0.2s;
   box-shadow: 0 4px 20px rgba(74,124,247,0.4);
 }
-#start-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(74,124,247,0.5); }
+#start-btn:hover  { transform: translateY(-1px); }
 #start-btn:active { transform: scale(0.97); }
-#start-overlay small { font-size: 12px; color: #555; }
+#start-overlay small { font-size: 11px; color: #555; }
 
-/* Badges */
-.badges { display: flex; gap: 8px; flex-wrap: wrap; }
-.badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+/* ── BADGES ── */
+.badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 .badge.blue   { background: var(--blue-dim);   color: var(--blue); }
 .badge.green  { background: var(--green-dim);  color: var(--green); }
 .badge.gray   { background: var(--bg3);        color: var(--text2); }
 .badge.amber  { background: var(--amber-dim);  color: var(--amber); }
 .badge.purple { background: var(--purple-dim); color: var(--purple); }
 
-/* Right panel — lihat bagian bawah */
+/* ── RIGHT PANEL (Desktop: scroll sendiri) ── */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+}
+.right-panel::-webkit-scrollbar { width: 3px; }
+.right-panel::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
 
+/* ── CARDS ── */
 .card {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 16px;
+  padding: 12px 14px;
+  flex-shrink: 0;
 }
 .card-label {
   font-size: 11px; font-weight: 600;
   color: var(--text2); text-transform: uppercase;
-  letter-spacing: 0.08em; margin-bottom: 10px;
+  letter-spacing: 0.08em; margin-bottom: 8px;
 }
 
-/* Sentence */
+/* ── SENTENCE ── */
 #sentence-box {
-  min-height: 56px; font-size: 20px; font-weight: 600;
+  min-height: 48px; font-size: 20px; font-weight: 600;
   color: var(--text); word-break: break-word; line-height: 1.5;
 }
 .cursor {
-  display: inline-block; width: 2px; height: 20px;
+  display: inline-block; width: 2px; height: 18px;
   background: var(--blue); margin-left: 3px;
   vertical-align: middle; animation: blink 1s step-end infinite;
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* Buttons */
-.btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+/* ── BUTTONS ── */
+.btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 7px; margin-bottom: 10px; }
 .btn {
-  padding: 10px 6px; background: var(--bg3); color: var(--text);
+  padding: 9px 6px; background: var(--bg3); color: var(--text);
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  font-size: 13px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s;
+  font-size: 12px; font-weight: 500; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
 }
 .btn:hover  { background: #2a2e45; }
 .btn:active { transform: scale(0.97); }
@@ -202,71 +280,53 @@ main {
 .btn.accent { border-color: var(--blue-dim); color: var(--blue); }
 .btn.accent:hover { background: var(--blue-dim); }
 
-.speed-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text2); }
+.speed-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text2); }
 .speed-row input { flex: 1; accent-color: var(--blue); }
-#hold-val { min-width: 56px; text-align: right; color: var(--text); font-weight: 500; }
+#hold-val { min-width: 52px; text-align: right; color: var(--text); font-weight: 500; }
 
-/* Category filter */
-#cat-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+/* ── CATEGORY FILTER ── */
+#cat-filter { display: flex; flex-wrap: wrap; gap: 5px; }
 .cat-btn {
-  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
   border: 1px solid var(--border); background: var(--bg3); color: var(--text2);
   cursor: pointer; transition: all 0.15s;
 }
-.cat-btn:hover { border-color: var(--blue); color: var(--blue); }
+.cat-btn:hover  { border-color: var(--blue); color: var(--blue); }
 .cat-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 
-/* Word grid (dictionary) */
+/* ── WORD GRID (Kamus) ── */
 #word-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
-  max-height: 320px; overflow-y: auto;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px;
+  max-height: 280px; overflow-y: auto;
 }
-#word-grid::-webkit-scrollbar { width: 4px; }
+#word-grid::-webkit-scrollbar { width: 3px; }
 #word-grid::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
 
 .word-card {
   background: var(--bg3); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 10px 12px;
-  transition: border-color 0.2s, transform 0.2s;
-  cursor: default;
+  border-radius: var(--radius-sm); padding: 9px 10px;
+  transition: border-color 0.2s, transform 0.2s; cursor: default;
 }
 .word-card.active {
-  border-color: var(--blue);
-  background: var(--blue-dim);
-  transform: scale(1.03);
-  box-shadow: 0 0 12px rgba(74,124,247,0.3);
+  border-color: var(--blue); background: var(--blue-dim);
+  transform: scale(1.03); box-shadow: 0 0 10px rgba(74,124,247,0.3);
 }
-.word-emoji { font-size: 20px; line-height: 1; margin-bottom: 4px; }
-.word-name  { font-size: 14px; font-weight: 700; color: var(--text); }
-.word-hint  { font-size: 11px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
+.word-emoji { font-size: 18px; line-height: 1; margin-bottom: 3px; }
+.word-name  { font-size: 13px; font-weight: 700; color: var(--text); }
+.word-hint  { font-size: 10px; color: var(--text2); margin-top: 2px; line-height: 1.3; }
 
-/* History */
-#history { display: flex; flex-wrap: wrap; gap: 5px; min-height: 30px; }
+/* ── HISTORY ── */
+#history { display: flex; flex-wrap: wrap; gap: 4px; min-height: 28px; }
 .hist-chip {
-  padding: 4px 12px; border-radius: 20px;
+  padding: 3px 10px; border-radius: 20px;
   background: var(--green-dim); color: var(--green);
-  font-size: 13px; font-weight: 600;
+  font-size: 12px; font-weight: 600;
 }
 
+/* ── FOOTER ── */
 footer {
-  padding: 10px 24px; text-align: center;
-  font-size: 12px; color: var(--text2);
+  flex-shrink: 0;
+  padding: 10px 16px; text-align: center;
+  font-size: 11px; color: var(--text2);
   border-top: 1px solid var(--border); background: var(--bg2);
-}
-
-/* ── TAMBAHAN: Right panel scrollable, kamera tetap fix ── */
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-  overflow-y: auto;    /* Panel kanan bisa scroll sendiri */
-  overflow-x: hidden;
-  padding-right: 4px;
-}
-.right-panel::-webkit-scrollbar { width: 4px; }
-.right-panel::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 2px; }
-
-footer {
-  flex-shrink: 0; /* Footer tidak menyusut */
 }
