@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIBI Kata — Bahasa Isyarat Per Kata</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <div class="logo">🤟</div>
+      <div>
+        <h1>SIBI Kata</h1>
+        <p class="sub">Bahasa Isyarat Per Kata — Real-time</p>
+      </div>
+    </div>
+    <div id="status-bar">
+      <div id="status-dot"></div>
+      <span id="status-text">Klik "Mulai Kamera" untuk memulai</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Kamera -->
+    <section class="cam-section">
+      <div id="cam-wrap">
+        <video id="video" autoplay muted playsinline></video>
+        <canvas id="canvas"></canvas>
+
+        <!-- Detected word overlay -->
+        <div id="word-overlay">
+          <div id="detected-emoji">🤔</div>
+          <div id="detected-word">—</div>
+          <div id="detected-desc">Arahkan tangan ke kamera</div>
+          <div class="conf-wrap">
+            <div id="conf-bar"></div>
+          </div>
+        </div>
+
+        <!-- Hold progress bar -->
+        <div id="hold-wrap">
+          <div id="hold-bar"></div>
+          <span id="hold-label">Tahan isyarat untuk menambah kata</span>
+        </div>
+
+        <!-- Start overlay -->
+        <div id="start-overlay">
+          <div class="start-icon">🤟</div>
+          <h2>SIBI Kata</h2>
+          <p>Kenali bahasa isyarat per kata secara real-time.<br>Tunjukkan isyarat tangan dan tahan beberapa detik.</p>
+          <button id="start-btn">▶ Mulai Kamera</button>
+          <small>Izinkan akses kamera saat diminta browser</small>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="badges">
+        <span class="badge blue">MediaPipe Hands</span>
+        <span class="badge green">21 Landmark</span>
+        <span id="fps-badge" class="badge gray">0 FPS</span>
+        <span id="cat-badge" class="badge amber">Semua Kategori</span>
+      </div>
+    </section>
+
+    <!-- Panel Kanan -->
+    <section class="right-panel">
+
+      <!-- Kalimat -->
+      <div class="card">
+        <div class="card-label">💬 Kalimat Tersusun</div>
+        <div id="sentence-box"><span class="cursor"></span></div>
+      </div>
+
+      <!-- Kontrol -->
+      <div class="card">
+        <div class="card-label">⚙️ Kontrol</div>
+        <div class="btn-grid">
+          <button class="btn" onclick="deleteLast()">⌫ Hapus</button>
+          <button class="btn danger" onclick="clearAll()">🗑 Bersihkan</button>
+          <button class="btn accent" onclick="speakSentence()">🔊 Ucapkan</button>
+        </div>
+        <div class="speed-row">
+          <label>Kecepatan tahan:</label>
+          <input type="range" id="hold-speed" min="800" max="3000" step="100" value="1500" />
+          <span id="hold-val">1500 ms</span>
+        </div>
+      </div>
+
+      <!-- Filter Kategori -->
+      <div class="card">
+        <div class="card-label">🗂 Filter Kategori</div>
+        <div id="cat-filter"></div>
+      </div>
+
+      <!-- Kamus isyarat -->
+      <div class="card">
+        <div class="card-label">📖 Kamus Isyarat</div>
+        <div id="word-grid"></div>
+      </div>
+
+      <!-- Riwayat -->
+      <div class="card">
+        <div class="card-label">🕒 Riwayat Kata</div>
+        <div id="history"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>SIBI Kata — Bahasa Isyarat Indonesia Per Kata | Dibuat dengan ❤️ menggunakan MediaPipe Hands</p>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="words.js"></script>
+<script src="classifier.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
